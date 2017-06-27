@@ -1,0 +1,11 @@
+.hide-validation-error  .md-errors-spacer{ 
+display: none; 
+}
+
+.text-light {
+color:white;
+}
+
+.text-light h2,.text-light h3 {
+color:white;
+}
