@@ -42,8 +42,8 @@ angular.module("automator")
 
 function InitController($http, $scope,$ocLazyLoad,$app) {
     $scope.fetch = function() {
-            var base = "http://localhost:3456/mobile/100202";
-            // var base = "https://thebuilder.hk/automator/mobile/"+window.AppId;
+            // var base = "http://localhost:3456/mobile/100202";
+            var base = "https://thebuilder.hk/automator/mobile/"+window.AppId;
             $scope.error = false;
             $http.get(base + "/json").then(function(response) {
                 if (response.status <= 400 && response.status != -1) {
@@ -62,6 +62,7 @@ function InitController($http, $scope,$ocLazyLoad,$app) {
                         $app.prepare(response.data);
                     },function(err){
                         console.log(err)
+                        $scope.error = true
                     })
                 } else {
                     $scope.error = true
