@@ -32,118 +32,18 @@ angular.module("automator")
         $urlRouterProvider.otherwise("/init");
     })
 
-    
-.factory("$app", function($http, $rootScope) {
+.factory('$app',function($rootScope,$state){
     return {
-        prepare: prepare,
-        loadScript: loadScript
+        prepare:function(app){
+            window.AppPrepare($rootScope,$state,app)
+        }
     }
+})    
 
-    function prepare(app) {
-        window.App = app;
-
-
-        window.App.states.forEach(function(state) {
-            if (!state.tabs && !state.modal) {
-                var stateObject = {
-                    url: '/' + state.name,
-                    views: {
-                        'app': {
-                            template: window.dynamicContent.generate(state),
-                            // controller:"StateController"
-                            controller: function($scope, $stateParams, $timeout,State) {
-                                $scope.$on("$ionicView.enter", function() {
-                                    $scope.$broadcast("$enter", $stateParams);
-                                })
-                                $scope.$on("$ionicView.loaded", function() {
-
-                                    if ($stateParams.data) {
-                                        $scope.data = $stateParams.data;
-                                    }
-
-                                    $scope.$broadcast("$loaded");
-
-                                    if (State.lifecycle && State.lifecycle.loaded){
-                                        eval(State.lifecycle.loaded)
-                                    }
-
-                                    
-                                })
-                                $scope.refresh = function() {
-                                    $scope.$broadcast("$refresh")
-                                }
-                            },
-                            resolve:{
-                                State:function(){
-                                    return state;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (state.data) {
-                    stateObject.params = {
-                        data: null
-                    }
-                }
-
-                stateProviderRef.state('app.' + state.name, stateObject)
-            }
-
-            if (state.tabs) {
-                stateProviderRef.state('app.tab.' + state.name, {
-                    url: '/' + state.name,
-                    views: {
-                        'tab-content': {
-                            template: window.dynamicContent.generate(state),
-                            // controller:"StateController"
-                            controller: function($scope, $stateParams, $timeout) {
-                                $scope.$on("$ionicView.enter", function() {
-                                    $scope.$broadcast("$enter", $stateParams);
-                                })
-                                $scope.$on("$ionicView.loaded", function() {
-                                    $scope.$broadcast("$loaded");
-                                })
-                                $scope.refresh = function() {
-                                    $scope.$broadcast("$refresh")
-                                }
-                            }
-                        }
-                    }
-                })
-            }
-        })
-
-        window.location.href = "#/" + window.App.basic.defaultState;
-        $rootScope.$broadcast("$app.ready")
-    }
-
-    function loadScript(src, callback) {
-        var s,
-            r,
-            t;
-        r = false;
-        s = document.createElement('script');
-        s.type = 'text/javascript';
-        s.src = src;
-        s.onload = s.onreadystatechange = function() {
-            //console.log( this.readyState ); //uncomment this line to see which ready states are called.
-            if (!r && (!this.readyState || this.readyState == 'complete')) {
-                r = true;
-                callback();
-            }
-        };
-        t = document.getElementsByTagName('script')[0];
-        t.parentNode.insertBefore(s, t);
-    }
-})
-
-
-function InitController($http, $scope, $app,$ocLazyLoad) {
+function InitController($http, $scope,$ocLazyLoad,$app) {
     $scope.fetch = function() {
-            // var base = "http://localhost:3456/mobile/100026";
-            var base = "https://thebuilder.hk/automator/mobile/"+window.AppId;
+            var base = "http://localhost:3456/mobile/100202";
+            // var base = "https://thebuilder.hk/automator/mobile/"+window.AppId;
             $scope.error = false;
             $http.get(base + "/json").then(function(response) {
                 if (response.status <= 400 && response.status != -1) {
@@ -152,7 +52,7 @@ function InitController($http, $scope, $app,$ocLazyLoad) {
                     //     console.log("Script Loaded")
                     //     $app.prepare(response.data);
                     // })
-
+                    window.App = response.data;
                     $ocLazyLoad.load({
                         cache:false,
                         rerun:true,
