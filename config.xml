@@ -5,8 +5,7 @@
     <author email="support@thebuilder.hk" href="https://thebuilder.hk/">The Builder</author>
     <content src="index.html" />
     <access origin="*" />
-    <allow-navigation href="http://ionic.local/*" />
-    <allow-navigation href="https://thebuilder.hk/*" />
+    <allow-navigation href="*"/>
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />
